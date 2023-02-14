@@ -104,7 +104,7 @@ export class Dapp extends React.Component {
               Time Till Close : {(this.state.tokenData.end_time / 86400).toString()} Days
             </h3>
             <h3>
-              Donations : {ethers.utils.formatEther(this.state.totalBalance)} ETH / {this.state.tokenData.goal.toString()} ETH
+              Donations : {ethers.utils.formatEther(this.state.totalBalance)} ETH / {ethers.utils.formatEther(this.state.tokenData.goal)} ETH
             </h3>
             <p>
               Welcome <b>{this.state.selectedAddress}</b>, you have donated{" "}

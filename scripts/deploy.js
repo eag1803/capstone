@@ -23,7 +23,7 @@ async function main() {
   console.log("Account balance:", (await deployer.getBalance()).toString());
 
   const Charity = await ethers.getContractFactory("Charity");
-  const charity = await Charity.deploy( "Test Charity",  "0x5618a8a9c98caBE13bC6A27407a16BC0872D289f",  50, 60 * 60 * 24 * 7) ;
+  const charity = await Charity.deploy( "Test Charity",  "0x5618a8a9c98caBE13bC6A27407a16BC0872D289f",  "50000000000000000000", 60 * 60 * 24 * 7) ;
   await charity.deployed();
 
   console.log("Token address:", charity.address);
