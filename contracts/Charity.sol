@@ -13,13 +13,13 @@ contract Charity {
     event ContributionReceived(address indexed fromAddress, uint256 amount);
     event WithdrawlSent(uint amount);
 
-    constructor(string memory _name, address _beneficiary, uint256 _goal, uint256 _end_time) {
+    constructor(string memory _name, address _beneficiary, uint256 _goal, uint256 _end_time, address _creator) {
 
         name = _name;
         beneficiary = _beneficiary;
         goal = _goal;
         end_time = _end_time + block.timestamp;
-        creator = msg.sender;
+        creator = _creator;
         
     }
 
@@ -60,6 +60,10 @@ contract Charity {
     
     function get_beneficiary() external view returns(address){
         return beneficiary;
+    }
+
+    function get_creator() external view returns(address){
+        return creator;
     }
 
     function get_time_left() external view returns(uint256){
