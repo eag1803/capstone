@@ -9,6 +9,7 @@ contract Charity {
     address beneficiary;
     uint256 end_time;
     bool lock = false;
+    address charityChain;
 
     event ContributionReceived(address indexed fromAddress, uint256 amount);
     event WithdrawlSent(uint amount);
@@ -20,6 +21,7 @@ contract Charity {
         goal = _goal;
         end_time = _end_time + block.timestamp;
         creator = _creator;
+        charityChain = msg.sender;
         
     }
 
@@ -40,6 +42,11 @@ contract Charity {
         require(send, "Failed to send");
         emit WithdrawlSent(bal);
         lock = false;
+    }
+
+    function get_user_balance(address _user) external view returns(uint256){
+        require(msg.sender == charityChain);
+        return contributors[_user];
     }
 
     function get_balance() external view returns(uint256){

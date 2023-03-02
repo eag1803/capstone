@@ -22,14 +22,14 @@ async function main() {
 
   console.log("Account balance:", (await deployer.getBalance()).toString());
 
-  const CharityChain = await ethers.getContractFactory("CharityChain");
-  const charitychain = await CharityChain.deploy() ;
-  await charitychain.deployed();
+  const Charity = await ethers.getContractFactory("Charity");
+  const charity = await Charity.deploy( "Test Charity",  "0x281cE1948771Fa35C79E8cF31FE456b875d79eA2",  "50000000000000000000", 60 * 60 * 24 * 7) ;
+  await charity.deployed();
 
-  console.log("Token address:", charitychain.address);
+  console.log("Token address:", charity.address);
 
   // We also save the contract's artifacts and address in the frontend directory
-  //saveFrontendFiles(charity);
+  saveFrontendFiles(charity);
 }
 
 function saveFrontendFiles(charity) {
