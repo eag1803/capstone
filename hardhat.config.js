@@ -6,7 +6,7 @@ module.exports = {
   networks:{
     localganache:{
       url: "http://127.0.0.1:8545",
-      accounts: ["80a249b2bb13ad7248e5520edfaf2ad60c42030a9a4a164e926e0db52c09ad70"],
+      accounts: ["6ffc2e6b9aba06d1c381965697e207773e49ff692761a69e25fbd780cc5b6eb1"],
       chainId: 1337
     }
   }

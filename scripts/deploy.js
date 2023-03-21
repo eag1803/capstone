@@ -29,10 +29,10 @@ async function main() {
   console.log("Token address:", charitychain.address);
 
   // We also save the contract's artifacts and address in the frontend directory
-  //saveFrontendFiles(charity);
+  saveFrontendFiles(charitychain);
 }
 
-function saveFrontendFiles(charity) {
+function saveFrontendFiles(charitychain) {
   const fs = require("fs");
   const contractsDir = path.join(__dirname, "..", "frontend", "src", "contracts");
 
@@ -42,7 +42,14 @@ function saveFrontendFiles(charity) {
 
   fs.writeFileSync(
     path.join(contractsDir, "contract-address.json"),
-    JSON.stringify({ Charity: charity.address }, undefined, 2)
+    JSON.stringify({ CharityChain: charitychain.address }, undefined, 2)
+  );
+
+  const CharityChainArtifact = artifacts.readArtifactSync("CharityChain");
+
+  fs.writeFileSync(
+    path.join(contractsDir, "CharityChain.json"),
+    JSON.stringify(CharityChainArtifact, null, 2)
   );
 
   const CharityArtifact = artifacts.readArtifactSync("Charity");
