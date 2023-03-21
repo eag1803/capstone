@@ -1,0 +1,26 @@
+.page {
+    background: #D9D9D9;
+    width:100vw;
+    height:7vh;
+    border-bottom:solid black;
+}
+
+.center img {
+    position:absolute;
+    right:50vw;
+    left:50vw;
+}
+
+.right {
+    position: absolute;
+    right: 15px;
+}
+.outer {
+    width:100%;
+    display: flex;
+}
+.icon {
+    width:2em; 
+    height:2em;
+}
+

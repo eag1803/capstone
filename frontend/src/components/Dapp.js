@@ -19,10 +19,14 @@ import { TransactionErrorMessage } from "./TransactionErrorMessage";
 import { WaitingForTransactionMessage } from "./WaitingForTransaction";
 import { Withdrawl } from "./Withdrawl";
 
+import { Homepage } from "./Homepage"
+import { Projectpage } from "./Projectpage"
+import { Discoverpage } from "./Discoverpage"
+
 // This is the Hardhat Network id that we set in our hardhat.config.js.
 // Here's a list of network ids https://docs.metamask.io/guide/ethereum-provider.html#properties
 // to use when deploying to other networks.
-const HARDHAT_NETWORK_ID = '1337';
+const HARDHAT_NETWORK_ID = '31337';
 
 // This is an error code that indicates that the user canceled a transaction
 const ERROR_CODE_TX_REJECTED_BY_USER = 4001;
@@ -55,9 +59,12 @@ export class Dapp extends React.Component {
       transactionError: undefined,
       networkError: undefined,
     };
-
+    this.currentPage = 'Home'
     this.state = this.initialState;
+    this.pages = ['Home', 'Discover', 'Project']
   }
+
+  
 
   render() {
     // Ethereum wallets inject the window.ethereum object. If it hasn't been
@@ -74,13 +81,16 @@ export class Dapp extends React.Component {
     // Note that we pass it a callback that is going to be called when the user
     // clicks a button. This callback just calls the _connectWallet method.
     if (!this.state.selectedAddress) {
-      return (
-        <ConnectWallet 
-          connectWallet={() => this._connectWallet()} 
-          networkError={this.state.networkError}
-          dismiss={() => this._dismissNetworkError()}
-        />
-      );
+      // return (
+      //   <ConnectWallet 
+      //     connectWallet={() => this._connectWallet()} 
+      //     networkError={this.state.networkError}
+      //     dismiss={() => this._dismissNetworkError()}
+      //   />
+      // );
+      return <Homepage
+                connectWallet={() => this._connectWallet()} 
+            />
     }
 
     // If the token data or the user's balance hasn't loaded yet, we show
@@ -90,76 +100,88 @@ export class Dapp extends React.Component {
     }
 
     // If everything is loaded, we render the application.
-    return (
-      <div className="container p-4">
-        <div className="row">
-          <div className="col-12">
-           <h1>
-              {this.state.tokenData.name}
-            </h1>
-            <h2>
-              Beneficiary Address : {this.state.tokenData.beneficiary.toString().toLowerCase()}
-            </h2>
-            <h3>
-              Time Till Close : {(this.state.tokenData.end_time / 86400).toString()} Days
-            </h3>
-            <h3>
-              Donations : {ethers.utils.formatEther(this.state.totalBalance)} ETH / {ethers.utils.formatEther(this.state.tokenData.goal)} ETH
-            </h3>
-            <p>
-              Welcome <b>{this.state.selectedAddress}</b>, you have donated{" "}
-              <b>
-                {ethers.utils.formatEther(this.state.userBalance)} ETH
-              </b>
-              .
-            </p>
-          </div>
-        </div>
+    console.log(this.currentPage)
+    switch(this.currentPage) {
+      case 'Home':
+        console.log('home')
+        return <Homepage />
+      case 'Discover':
+        return <Discoverpage />
+      case 'Project':
+        return <Projectpage />
+      default:
+        return 'failed switch'
+    }
+    // return (
+    //   <div className="container p-4">
+    //     <div className="row">
+    //       <div className="col-12">
+    //        <h1>
+    //           {this.state.tokenData.name}
+    //         </h1>
+    //         <h2>
+    //           Beneficiary Address : {this.state.tokenData.beneficiary.toString().toLowerCase()}
+    //         </h2>
+    //         <h3>
+    //           Time Till Close : {(this.state.tokenData.end_time / 86400).toString()} Days
+    //         </h3>
+    //         <h3>
+    //           Donations : {ethers.utils.formatEther(this.state.totalBalance)} ETH / {ethers.utils.formatEther(this.state.tokenData.goal)} ETH
+    //         </h3>
+    //         <p>
+    //           Welcome <b>{this.state.selectedAddress}</b>, you have donated{" "}
+    //           <b>
+    //             {ethers.utils.formatEther(this.state.userBalance)} ETH
+    //           </b>
+    //           .
+    //         </p>
+    //       </div>
+    //     </div>
 
-        <hr />
+    //     <hr />
 
-        <div className="row">
-          <div className="col-12">
-            {/* 
-              Sending a transaction isn't an immediate action. You have to wait
-              for it to be mined.
-              If we are waiting for one, we show a message here.
-            */}
-            {this.state.txBeingSent && (
-              <WaitingForTransactionMessage txHash={this.state.txBeingSent} />
-            )}
+    //     <div className="row">
+    //       <div className="col-12">
+    //         {/* 
+    //           Sending a transaction isn't an immediate action. You have to wait
+    //           for it to be mined.
+    //           If we are waiting for one, we show a message here.
+    //         */}
+    //         {this.state.txBeingSent && (
+    //           <WaitingForTransactionMessage txHash={this.state.txBeingSent} />
+    //         )}
 
-            {/* 
-              Sending a transaction can fail in multiple ways. 
-              If that happened, we show a message here.
-            */}
-            {this.state.transactionError && (
-              <TransactionErrorMessage
-                message={this._getRpcErrorMessage(this.state.transactionError)}
-                dismiss={() => this._dismissTransactionError()}
-              />
-            )}
-          </div>
-        </div>
+    //         {/* 
+    //           Sending a transaction can fail in multiple ways. 
+    //           If that happened, we show a message here.
+    //         */}
+    //         {this.state.transactionError && (
+    //           <TransactionErrorMessage
+    //             message={this._getRpcErrorMessage(this.state.transactionError)}
+    //             dismiss={() => this._dismissTransactionError()}
+    //           />
+    //         )}
+    //       </div>
+    //     </div>
 
-        <div className="row">
-          <div className="col-12">
-            <Transfer
-              donate={(amount) =>
-                this._donate(amount)
-              }
-            />
-            {this.state.tokenData.beneficiary.toString().toLowerCase() === this.state.selectedAddress.toString() && (
-              <Withdrawl 
-              withdraw={ () =>
-                this._withdraw()
-              }
-              />
-            )}
-          </div>
-        </div>
-      </div>
-    );
+    //     <div className="row">
+    //       <div className="col-12">
+    //         <Transfer
+    //           donate={(amount) =>
+    //             this._donate(amount)
+    //           }
+    //         />
+    //         {this.state.tokenData.beneficiary.toString().toLowerCase() === this.state.selectedAddress.toString() && (
+    //           <Withdrawl 
+    //           withdraw={ () =>
+    //             this._withdraw()
+    //           }
+    //           />
+    //         )}
+    //       </div>
+    //     </div>
+    //   </div>
+    // );
   }
 
   componentWillUnmount() {
@@ -175,7 +197,6 @@ export class Dapp extends React.Component {
     // To connect to the user's wallet, we have to run this method.
     // It returns a promise that will resolve to the user's address.
     const [selectedAddress] = await window.ethereum.request({ method: 'eth_requestAccounts' });
-
     // Once we have the address, we can initialize the application.
 
     // First we check the network
@@ -184,7 +205,6 @@ export class Dapp extends React.Component {
     }
 
     this._initialize(selectedAddress);
-
     // We reinitialize it whenever the user changes their account.
     window.ethereum.on("accountsChanged", ([newAddress]) => {
       this._stopPollingData();
@@ -237,6 +257,7 @@ export class Dapp extends React.Component {
       this._provider.getSigner(0)
     );
   }
+  
 
   // The next two methods are needed to start and stop polling data. While
   // the data being polled here is specific to this example, you can use this
@@ -264,21 +285,22 @@ export class Dapp extends React.Component {
   // The next two methods just read from the contract and store the results
   // in the component state.
   async _getTokenData() {
-    const name = await this._token.get_name();
-    const beneficiary = await this._token.get_beneficiary();
-    const goal = await this._token.get_goal();
-    const end_time = await this._token.get_time_left();
+    const name ='test' //await this._token.get_name();
+    const beneficiary ='test2'// await this._token.get_beneficiary();
+    const goal = 1000;//await this._token.get_goal();
+    const end_time = 1000000000//await this._token.get_time_left();
 
     this.setState({ tokenData: { name, beneficiary, goal, end_time} });
   }
 
   async _updateUserBalance() {
-    const userBalance = await this._token.get_user_balance();
+    const userBalance = 1
+    // const userBalance = await this._token.get_user_balance();
     this.setState({ userBalance });
   }
 
   async _updateTotalBalance() {
-    const totalBalance = await this._token.get_balance();
+    const totalBalance = 1;//await this._token.get_balance();
     this.setState({ totalBalance });
   }
 
