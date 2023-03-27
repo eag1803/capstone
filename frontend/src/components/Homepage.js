@@ -1,28 +1,21 @@
 import React from "react";
-import { Navbar } from "./Navbar"
 
-import './styling/homepage.css'
 
-export function Homepage({connectWallet}) {
+export function Homepage({}) {
     return <div className='homepage'>
-                <Navbar 
-                currentPage = 'Homepage'
-                connectWallet = {connectWallet}
-                />
-
             <div className="home">
                 <div className='center'>
-                    <text>
-                    <h3>
-                        Featured Project
-                    </h3>
-                    <p>
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce vulputate
-                    </p>
-                    </text>
+                    <span >
+                        <h3>
+                            Featured Project
+                        </h3>
+                        <p className='projectDescription'>
+                            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce vulputate
+                        </p>
+                    </span>
                 </div>
 
-                <div>
+                <div className='content'>
                     <div className="placeholder">
                     placeholder
 

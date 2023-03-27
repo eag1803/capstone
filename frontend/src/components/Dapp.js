@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Fragment } from "react";
 
 // We'll use ethers to interact with the Ethereum network and our contract
 import { ethers } from "ethers";
@@ -22,7 +22,9 @@ import { Withdrawl } from "./Withdrawl";
 import { Homepage } from "./Homepage"
 import { Projectpage } from "./Projectpage"
 import { Discoverpage } from "./Discoverpage"
-
+import {Navbar} from "./Navbar"
+import './styling/style.css'
+ 
 // This is the Hardhat Network id that we set in our hardhat.config.js.
 // Here's a list of network ids https://docs.metamask.io/guide/ethereum-provider.html#properties
 // to use when deploying to other networks.
@@ -58,8 +60,8 @@ export class Dapp extends React.Component {
       txBeingSent: undefined,
       transactionError: undefined,
       networkError: undefined,
+      currentPage: 'Home'
     };
-    this.currentPage = 'Home'
     this.state = this.initialState;
     this.pages = ['Home', 'Discover', 'Project']
   }
@@ -88,9 +90,21 @@ export class Dapp extends React.Component {
       //     dismiss={() => this._dismissNetworkError()}
       //   />
       // );
-      return <Homepage
-                connectWallet={() => this._connectWallet()} 
+      return (
+        <Fragment>
+          <Navbar 
+            currentPage = {this.state.currentPage}
+            connectWallet = {() => this._connectWallet()}
+            handlePageChange={(value) => this.setState({'currentPage':value})}
+            handleDisconnectWallet={() => this._disconnectWallet()}
+            networkError={this.state.networkError}
+            dismiss={() => this._dismissNetworkError()}
+            loggedIn={this.state.tokenData}
             />
+          <Homepage 
+          />
+      </Fragment>
+      )
     }
 
     // If the token data or the user's balance hasn't loaded yet, we show
@@ -100,15 +114,56 @@ export class Dapp extends React.Component {
     }
 
     // If everything is loaded, we render the application.
-    console.log(this.currentPage)
-    switch(this.currentPage) {
+    switch(this.state.currentPage) {
       case 'Home':
         console.log('home')
-        return <Homepage />
+        return (
+          <Fragment>
+            <Navbar 
+            currentPage = {this.state.currentPage}
+            connectWallet = {() => this._connectWallet()}
+            handlePageChange={(value) => this.setState({'currentPage':value})}
+            handleDisconnectWallet={() => this._disconnectWallet()}
+            networkError={this.state.networkError}
+            dismiss={() => this._dismissNetworkError()}
+            loggedIn={this.state.tokenData}
+            />
+            <Homepage 
+            />
+        </Fragment>
+        )
       case 'Discover':
-        return <Discoverpage />
+        return (
+          <Fragment>
+            <Navbar 
+            currentPage = {this.state.currentPage}
+            connectWallet = {() => this._connectWallet()}
+            handlePageChange={(value) => this.setState({'currentPage':value})}
+            handleDisconnectWallet={() => this._disconnectWallet()}
+            networkError={this.state.networkError}
+            dismiss={() => this._dismissNetworkError()}
+            loggedIn={this.state.tokenData}
+            />,
+            <Discoverpage 
+            />
+        </Fragment>
+        )
       case 'Project':
-        return <Projectpage />
+        return (
+          <Fragment>
+            <Navbar 
+            currentPage = {this.state.currentPage}
+            connectWallet = {() => this._connectWallet()}
+            handlePageChange={(value) => this.setState({'currentPage':value})}
+            handleDisconnectWallet={() => this._disconnectWallet()}
+            networkError={this.state.networkError}
+            dismiss={() => this._dismissNetworkError()}
+            loggedIn={this.state.tokenData}
+            />,
+            <Projectpage 
+            />
+        </Fragment>
+        )
       default:
         return 'failed switch'
     }
@@ -225,6 +280,10 @@ export class Dapp extends React.Component {
       this._resetState();
     });
 
+  }
+
+  _disconnectWallet() {
+    this.setState(this.initialState);
   }
 
   _initialize(userAddress) {
