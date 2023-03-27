@@ -15,10 +15,7 @@ async function main() {
 
   // ethers is available in the global scope
   const [deployer] = await ethers.getSigners();
-  console.log(
-    "Deploying the contracts with the account:",
-    await deployer.getAddress()
-  );
+  console.log( "Deploying the contracts with the account:", await deployer.getAddress());
 
   console.log("Account balance:", (await deployer.getBalance()).toString());
 
@@ -26,7 +23,7 @@ async function main() {
   const charitychain = await CharityChain.deploy() ;
   await charitychain.deployed();
 
-  console.log("Token address:", charitychain.address);
+  console.log("Contract address:", charitychain.address);
 
   // We also save the contract's artifacts and address in the frontend directory
   saveFrontendFiles(charitychain);
