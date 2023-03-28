@@ -25,7 +25,7 @@ import {Navbar} from "./Navbar"
 import './styling/style.css'
  
 // This is the Network id the frontend will use.
-const HARDHAT_NETWORK_ID = '31337';
+const HARDHAT_NETWORK_ID = '5';
 
 // This is an error code that indicates that the user canceled a transaction
 const ERROR_CODE_TX_REJECTED_BY_USER = 4001;
@@ -242,7 +242,7 @@ export class Dapp extends React.Component {
     if (!this._checkNetwork()) {
       return;
     }
-
+  
     this._initialize(selectedAddress);
 
     // We reinitialize it whenever the user changes their account.
@@ -474,6 +474,7 @@ export class Dapp extends React.Component {
   }
 
   // This method checks if Metamask selected network is Localhost:8545 
+  
   _checkNetwork() {
     if (window.ethereum.networkVersion === HARDHAT_NETWORK_ID) {
       return true;
