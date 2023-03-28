@@ -15,10 +15,7 @@ async function main() {
 
   // ethers is available in the global scope
   const [deployer] = await ethers.getSigners();
-  console.log(
-    "Deploying the contracts with the account:",
-    await deployer.getAddress()
-  );
+  console.log( "Deploying the contracts with the account:", await deployer.getAddress());
 
   console.log("Account balance:", (await deployer.getBalance()).toString());
 
@@ -26,13 +23,13 @@ async function main() {
   const charitychain = await CharityChain.deploy() ;
   await charitychain.deployed();
 
-  console.log("Token address:", charitychain.address);
+  console.log("Contract address:", charitychain.address);
 
   // We also save the contract's artifacts and address in the frontend directory
-  //saveFrontendFiles(charity);
+  saveFrontendFiles(charitychain);
 }
 
-function saveFrontendFiles(charity) {
+function saveFrontendFiles(charitychain) {
   const fs = require("fs");
   const contractsDir = path.join(__dirname, "..", "frontend", "src", "contracts");
 
@@ -42,7 +39,14 @@ function saveFrontendFiles(charity) {
 
   fs.writeFileSync(
     path.join(contractsDir, "contract-address.json"),
-    JSON.stringify({ Charity: charity.address }, undefined, 2)
+    JSON.stringify({ CharityChain: charitychain.address }, undefined, 2)
+  );
+
+  const CharityChainArtifact = artifacts.readArtifactSync("CharityChain");
+
+  fs.writeFileSync(
+    path.join(contractsDir, "CharityChain.json"),
+    JSON.stringify(CharityChainArtifact, null, 2)
   );
 
   const CharityArtifact = artifacts.readArtifactSync("Charity");
