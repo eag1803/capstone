@@ -43,7 +43,9 @@ export class Dapp extends React.Component {
       // The user's address and balance
       selectedAddress: undefined,
       userBalance: undefined,
+      // The Charity Polling Data
       totalBalance: undefined,
+      totalBenificiaries: undefined,
       // The ID about transactions being sent, and any possible error with them
       txBeingSent: undefined,
       transactionError: undefined,
@@ -297,7 +299,7 @@ export class Dapp extends React.Component {
   }
 
   _selectCharity(index){
-    const charityAddress = this.state.charities[index];
+    const charityAddress = this.state.charities[index].charity;
     this._initializeCharity(charityAddress);
     this._getCharityData();
   }
@@ -319,12 +321,14 @@ export class Dapp extends React.Component {
       this._updateCharities()
       this._updateUserBalance()
       this._updateTotalBalance()
+      this._updateTotalBenificiaries()
     }, 1000);
 
     // We run it once immediately so we don't have to wait for it
     this._updateCharities();
     this._updateUserBalance();
     this._updateTotalBalance();
+    this._updateTotalBenificiaries()
   }
 
   _stopPollingData() {
@@ -349,14 +353,28 @@ export class Dapp extends React.Component {
   }
 
   async _updateUserBalance() {
+    if(!this._charity){
+      return;
+    }
     const userBalance = 1
-    // const userBalance = await this._token.get_user_balance();
+    // const userBalance = await this._charity.get_user_balance();
     this.setState({ userBalance });
   }
 
   async _updateTotalBalance() {
-    const totalBalance = 1;//await this._token.get_balance();
+    if(!this._charity){
+      return;
+    }
+    const totalBalance = 1;//await this._charity.get_balance();
     this.setState({ totalBalance });
+  }
+
+  async _updateTotalBenificiaries(){
+    if(!this._charity){
+      return;
+    }
+    const totalBenificiaries = await this_charity.get_total_benificiaries();
+    this.setState({totalBenificiaries});
   }
 
   
@@ -437,6 +455,7 @@ export class Dapp extends React.Component {
 
       await this._updateUserBalance();
       await this._updateTotalBalance();
+      await this._updateTotalBenificiaries();
     } catch (error) {
       if (error.code === ERROR_CODE_TX_REJECTED_BY_USER) {
         return;

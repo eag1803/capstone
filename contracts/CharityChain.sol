@@ -10,14 +10,25 @@ contract CharityChain {
         uint256 amount;
     }
 
+    struct CharityInfo {
+        address charity;
+        string title;
+    }
+
     function make_charity(string memory _name, address _beneficiary, uint256 _goal, uint256 _end_time) external payable returns(address){
         Charity charity = new Charity( _name, _beneficiary, _goal, _end_time, msg.sender);
         charitys.push(address(charity));
         return address(charity);
     }
 
-    function get_charities() external view returns(address[] memory){
-        return charitys;
+    function get_charities() external view returns(CharityInfo[] memory){
+        uint len = charitys.length;
+        CharityInfo[] memory info = new CharityInfo[](len);
+        for(uint i = 0; i < len; i++){
+            string memory _title = Charity(charitys[i]).get_name();
+            info[i] = CharityInfo({charity:charitys[i], title:_title});
+        }
+        return info;
     }
 
     function get_user_contributions() external view returns(UserContribution[] memory){
