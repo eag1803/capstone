@@ -1,11 +1,13 @@
 import React from "react";
 import './styling/navbar.css'
+import { NetworkErrorMessage } from "./NetworkErrorMessage";
 
 // TODO use currentPage to update the options on the navbar dynamically
 // TODO if you are logged in, change the connectWallet button to be a profile button (?)
-export function Navbar({currentPage, connectWallet, handleDisconnectWallet, networkError, dismiss, loggedIn, handlePageChange}) {
+export function Navbar({currentPage, connectWallet, handleDisconnectWallet, networkError, dismiss, loggedIn, handlePageChange, prepareNewCharity, handleNewCharity, unSetCharity}) {
 
     function handlePageChangeChild(event) {
+      unSetCharity();
       handlePageChange(event.target.innerText);
     }
 
@@ -21,13 +23,14 @@ export function Navbar({currentPage, connectWallet, handleDisconnectWallet, netw
       }
     }
 
-    function disconnectWallet() {
-      handleDisconnectWallet()
+    function createCharity() {
+      prepareNewCharity('test Name2', '0x8626f6940E2eb28930eFb4CeF49B2d1F2C9C1199', 125000, 3600 * 24 * 7 * Math.floor(new Date().getTime() / 1000))
+      handleNewCharity();
     }
 
     function loginButton() {
       if(loggedIn) {
-        return <button className="navButton" onClick={disconnectWallet}>
+        return <button className="navButton" onClick={handleDisconnectWallet}>
         <span>Log out</span>
       </button>
       } else {
@@ -41,7 +44,7 @@ export function Navbar({currentPage, connectWallet, handleDisconnectWallet, netw
       
        {leftPageButton()}
 
-        <button className="navButton">
+        <button className="navButton" onClick={createCharity}>
           <span>Start a Project</span>
         </button>
         
@@ -53,6 +56,15 @@ export function Navbar({currentPage, connectWallet, handleDisconnectWallet, netw
           </button>
     
           {loginButton()}
+          <div className="col-12 text-center">
+          {/* Metamask network should be set to Localhost:8545. */}
+          {networkError && (
+            <NetworkErrorMessage 
+              message={networkError} 
+              dismiss={dismiss} 
+            />
+          )}
+        </div>
         </span>
         
       </div>

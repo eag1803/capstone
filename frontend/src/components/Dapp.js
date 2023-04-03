@@ -48,7 +48,12 @@ export class Dapp extends React.Component {
       txBeingSent: undefined,
       transactionError: undefined,
       networkError: undefined,
-      currentPage: 'Home'
+      currentPage: 'Home',
+      newCharityName:undefined, 
+      newBeneficiary: undefined, 
+      newGoal:undefined, 
+      newEndTime:undefined,
+      donationAmount : undefined
     };
     this.state = this.initialState;
     this.pages = ['Home', 'Discover', 'Project']
@@ -57,6 +62,7 @@ export class Dapp extends React.Component {
   
 
   render() {
+    
     // Ethereum wallets inject the window.ethereum object. If it hasn't been
     // injected, we instruct the user to install MetaMask.
     if (window.ethereum === undefined) {
@@ -70,6 +76,18 @@ export class Dapp extends React.Component {
     //
     // Note that we pass it a callback that is going to be called when the user
     // clicks a button. This callback just calls the _connectWallet method.
+    const navbar = <Navbar 
+        currentPage = {this.state.currentPage}
+        connectWallet = {() => this._connectWallet()}
+        handlePageChange={(value) => this.setState({'currentPage':value} )}
+        prepareNewCharity={(name, beneficiary, goal, end_time) => this.setState({'newCharityName':name, 'newBeneficiary': beneficiary, 'newGoal':goal, 'newEndTime':end_time})}
+        handleNewCharity={()=>{this._handleNewCharity()}}
+        unSetCharity = {() => this.setState({'charityData':undefined})}
+        handleDisconnectWallet={() => this._disconnectWallet()}
+        networkError={this.state.networkError}
+        dismiss={() => this._dismissNetworkError()}
+        loggedIn={this.state.selectedAddress}
+      />
     if (!this.state.selectedAddress) {
       // return (
       //   <ConnectWallet 
@@ -78,18 +96,12 @@ export class Dapp extends React.Component {
       //     dismiss={() => this._dismissNetworkError()}
       //   />
       // );
+
       return (
         <Fragment>
-          <Navbar 
-            currentPage = {this.state.currentPage}
-            connectWallet = {() => this._connectWallet()}
-            handlePageChange={(value) => this.setState({'currentPage':value})}
-            handleDisconnectWallet={() => this._disconnectWallet()}
-            networkError={this.state.networkError}
-            dismiss={() => this._dismissNetworkError()}
-            loggedIn={this.state.tokenData}
-            />
+          {navbar}
           <Homepage 
+          handleDonate={(value) => {this.setState({'donationAmount': value}); this.handleDonate();}}
           />
       </Fragment>
       )
@@ -103,53 +115,48 @@ export class Dapp extends React.Component {
     }*/
 
     // If everything is loaded, we render the application.
+    
+
+
+
+    // TODO implement a modal for project creation and backing a project
+    // TODO implement searching
+    // TODO update updateCharities to fetch contents of charities rather than just their addresses
+    // TODO get more info from backend on selected charity to fill out info
+    // TODO implement parallax scrolling, etc. on project page.
+    console.log(this.state.charities);
+    if(this.state.charityData !== undefined) {
+      this.state.currentPage = 'Project';
+    }
     switch(this.state.currentPage) {
       case 'Home':
-        console.log('home')
         return (
           <Fragment>
-            <Navbar 
-            currentPage = {this.state.currentPage}
-            connectWallet = {() => this._connectWallet()}
-            handlePageChange={(value) => this.setState({'currentPage':value})}
-            handleDisconnectWallet={() => this._disconnectWallet()}
-            networkError={this.state.networkError}
-            dismiss={() => this._dismissNetworkError()}
-            loggedIn={this.state.tokenData}
-            />
+            {navbar}
             <Homepage 
+              handleDonate={(value) => {this.setState({'donationAmount': value}); this.handleDonate();}}
             />
         </Fragment>
         )
       case 'Discover':
         return (
           <Fragment>
-            <Navbar 
-            currentPage = {this.state.currentPage}
-            connectWallet = {() => this._connectWallet()}
-            handlePageChange={(value) => this.setState({'currentPage':value})}
-            handleDisconnectWallet={() => this._disconnectWallet()}
-            networkError={this.state.networkError}
-            dismiss={() => this._dismissNetworkError()}
-            loggedIn={this.state.tokenData}
-            />,
+            {navbar}
             <Discoverpage 
+            charities = {this.state.charities}
+            handlePageChange={(value) => this.setState({'currentPage':value} )}
+            setCharity = {(index) => this._selectCharity(index)}
             />
         </Fragment>
         )
       case 'Project':
         return (
           <Fragment>
-            <Navbar 
-            currentPage = {this.state.currentPage}
-            connectWallet = {() => this._connectWallet()}
-            handlePageChange={(value) => this.setState({'currentPage':value})}
-            handleDisconnectWallet={() => this._disconnectWallet()}
-            networkError={this.state.networkError}
-            dismiss={() => this._dismissNetworkError()}
-            loggedIn={this.state.tokenData}
-            />,
+            {navbar}
             <Projectpage 
+            charityName = {this.state.charityData.name}
+            charityEndTime={this.state.charityData.end_time}
+            handleDonate={(value) => {this.setState({'donationAmount': value}); this.handleDonate();}}
             />
         </Fragment>
         )
@@ -296,10 +303,10 @@ export class Dapp extends React.Component {
     this._charity = undefined;
   }
 
-  _selectCharity(index){
+  async _selectCharity(index){
     const charityAddress = this.state.charities[index];
-    this._initializeCharity(charityAddress);
-    this._getCharityData();
+    await this._initializeCharity(charityAddress);
+    await this._getCharityData();
   }
 
 
@@ -345,7 +352,20 @@ export class Dapp extends React.Component {
 
   async _updateCharities(){
     const charities = await this._charitychain.get_charities();
+    let fullCharities = []
+
+    // for(let charity of charities) {
+    //   let _charity = await this._initializeCharity(charity);
+    //   console.log(charity);
+    //   console.log(_charity);
+    //   const name = await _charity.get_name();
+    //   const beneficiary = await _charity.get_beneficiary();
+    //   const goal = await _charity.get_goal();
+    //   const end_time = await _charity.get_time_left();
+    //   fullCharities.push({'name': name, 'benificiary':beneficiary, 'goal':goal, 'endTime':end_time})
+    // }
     this.setState({ charities })
+    
   }
 
   async _updateUserBalance() {
@@ -360,6 +380,14 @@ export class Dapp extends React.Component {
   }
 
   
+  // Method that wraps _makeCharity to make it callable by child components
+  async _handleNewCharity() {
+    if(this.state.newCharityName != undefined) {
+      await this._makeCharity(this.state.newCharityName, this.state.newBeneficiary, this.state.newGoal, this.state.newEndTime);
+      this.setState({'newCharityName':undefined, 'newBeneficiary': undefined, 'newGoal':undefined, 'newEndTime':undefined});
+    }
+  }
+
   // Method to make a new Charity
   async _makeCharity(name, beneficiary, goal, end_time){
     try {
@@ -415,6 +443,13 @@ export class Dapp extends React.Component {
     }
   }
   
+  handleDonate() {
+    let donation = this.state.donationAmount;
+    this.setState({'donationAmount' : undefined});
+    this._donate(donation);
+  }
+
+
   // Method to Donate to selected Charity
   async _donate(amount) {
     if(!this._charity){

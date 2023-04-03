@@ -1,10 +1,9 @@
 import React from "react"
 
 
-export function DiscoverItem({title, description, image}) {
+export function DiscoverItem({title, description, image, index, handleNavigate}) {
     function navigateToProject() {
-        // todo, this willl need the backend most likely
-        console.log(`navigate`)
+        handleNavigate(index);
     }
     
     return <div className="discoverItem" onClick={navigateToProject}>
