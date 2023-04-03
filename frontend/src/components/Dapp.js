@@ -25,7 +25,7 @@ import {Navbar} from "./Navbar"
 import './styling/style.css'
  
 // This is the Network id the frontend will use.
-const HARDHAT_NETWORK_ID = '31337';
+const HARDHAT_NETWORK_ID = '5';
 
 // This is an error code that indicates that the user canceled a transaction
 const ERROR_CODE_TX_REJECTED_BY_USER = 4001;
@@ -43,7 +43,9 @@ export class Dapp extends React.Component {
       // The user's address and balance
       selectedAddress: undefined,
       userBalance: undefined,
+      // The Charity Polling Data
       totalBalance: undefined,
+      totalBenificiaries: undefined,
       // The ID about transactions being sent, and any possible error with them
       txBeingSent: undefined,
       transactionError: undefined,
@@ -249,7 +251,7 @@ export class Dapp extends React.Component {
     if (!this._checkNetwork()) {
       return;
     }
-
+  
     this._initialize(selectedAddress);
 
     // We reinitialize it whenever the user changes their account.
@@ -303,10 +305,10 @@ export class Dapp extends React.Component {
     this._charity = undefined;
   }
 
-  async _selectCharity(index){
-    const charityAddress = this.state.charities[index];
-    await this._initializeCharity(charityAddress);
-    await this._getCharityData();
+  _selectCharity(index){
+    const charityAddress = this.state.charities[index].charity;
+    this._initializeCharity(charityAddress);
+    this._getCharityData();
   }
 
 
@@ -326,12 +328,14 @@ export class Dapp extends React.Component {
       this._updateCharities()
       this._updateUserBalance()
       this._updateTotalBalance()
+      this._updateTotalBenificiaries()
     }, 1000);
 
     // We run it once immediately so we don't have to wait for it
     this._updateCharities();
     this._updateUserBalance();
     this._updateTotalBalance();
+    this._updateTotalBenificiaries()
   }
 
   _stopPollingData() {
@@ -369,16 +373,29 @@ export class Dapp extends React.Component {
   }
 
   async _updateUserBalance() {
+    if(!this._charity){
+      return;
+    }
     const userBalance = 1
-    // const userBalance = await this._token.get_user_balance();
+    // const userBalance = await this._charity.get_user_balance();
     this.setState({ userBalance });
   }
 
   async _updateTotalBalance() {
-    const totalBalance = 1;//await this._token.get_balance();
+    if(!this._charity){
+      return;
+    }
+    const totalBalance = 1;//await this._charity.get_balance();
     this.setState({ totalBalance });
   }
 
+  async _updateTotalBenificiaries(){
+    if(!this._charity){
+      return;
+    }
+    const totalBenificiaries = await this_charity.get_total_benificiaries();
+    this.setState({totalBenificiaries});
+  }
   
   // Method that wraps _makeCharity to make it callable by child components
   async _handleNewCharity() {
@@ -472,6 +489,7 @@ export class Dapp extends React.Component {
 
       await this._updateUserBalance();
       await this._updateTotalBalance();
+      await this._updateTotalBenificiaries();
     } catch (error) {
       if (error.code === ERROR_CODE_TX_REJECTED_BY_USER) {
         return;
@@ -509,6 +527,7 @@ export class Dapp extends React.Component {
   }
 
   // This method checks if Metamask selected network is Localhost:8545 
+  
   _checkNetwork() {
     if (window.ethereum.networkVersion === HARDHAT_NETWORK_ID) {
       return true;

@@ -10,6 +10,7 @@ contract Charity {
     uint256 end_time;
     bool lock = false;
     address charityChain;
+    uint256 total_benificiaries;
 
     event ContributionReceived(address indexed fromAddress, uint256 amount);
     event WithdrawlSent(uint amount);
@@ -22,11 +23,15 @@ contract Charity {
         end_time = _end_time + block.timestamp;
         creator = _creator;
         charityChain = msg.sender;
+        total_benificiaries = 0;
         
     }
 
     function recieve() external payable{
         require(block.timestamp < end_time, "The live period for this charity has ended");
+        if(!(contributors[msg.sender] > 0)){
+            total_benificiaries += 1;
+        }
         contributors[msg.sender] += msg.value;
         emit ContributionReceived(msg.sender, msg.value);
     }
@@ -47,6 +52,10 @@ contract Charity {
     function get_user_balance(address _user) external view returns(uint256){
         require(msg.sender == charityChain);
         return contributors[_user];
+    }
+
+    function get_total_benificiaries() external view returns(uint256){
+        return total_benificiaries;
     }
 
     function get_balance() external view returns(uint256){
