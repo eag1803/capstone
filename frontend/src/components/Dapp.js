@@ -373,7 +373,7 @@ export class Dapp extends React.Component {
     if(!this._charity){
       return;
     }
-    const totalBenificiaries = await this_charity.get_total_benificiaries();
+    const totalBenificiaries = await this._charity.get_total_benificiaries();
     this.setState({totalBenificiaries});
   }
 
