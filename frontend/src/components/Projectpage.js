@@ -3,20 +3,32 @@ import { Navbar } from "./Navbar"
 
 import './styling/style.css'
 
-export function Projectpage({charityName, charityEndTime}) {
+export function Projectpage({charityName, charityEndTime, totalBenificiaries, totalBalance, handleDonate}) {
 
     function convertEndTime() {
-        let endTimeUnix = charityEndTime.toNumber()
-        let endDate = new Date(endTimeUnix);
-        // To calculate the time difference of two dates
-        let diffTime = endDate.getTime() - new Date().getTime()
-        console.log(endDate)
+        if(charityEndTime !== undefined) {
+            let endTimeUnix = charityEndTime.toNumber()
+            let endDate = new Date(endTimeUnix);
+            console.log(endDate);
+            // To calculate the time difference of two dates
+            let diffTime = endDate.getTime() - new Date().getTime()
+    
+            // To calculate the no. of days between two dates
+            let diffDays = Math.floor(diffTime / (1000 * 3600 * 24));
+            return `${diffDays} days remaining`;
+        }
+    }
 
-        console.log(endDate.getTime()/(1000*3600*24))
-        // To calculate the no. of days between two dates
-        let diffDays = diffTime / (1000 * 3600 * 24);
-        return diffDays;
-        
+    function getBackers() {
+        if(totalBenificiaries !== undefined) {
+            return totalBenificiaries.toNumber()
+        }
+    }
+
+    function getTotalRaised() {
+        if(totalBalance !== undefined) {
+            return totalBalance.toNumber()
+        }
     }
     return <div className='projectPage'>
     <div className="home">
@@ -36,10 +48,10 @@ export function Projectpage({charityName, charityEndTime}) {
 
                 <div className='right' id='backerInfo'>
                     <p>
-                    $123,456 Raised
+                    ${getTotalRaised()} Raised
                     <br/><br/>
 
-                    1234 Backers
+                    {getBackers()} Backers
                     <br/><br/>
 
                     {convertEndTime()} 

@@ -3,25 +3,7 @@ import { DiscoverItem } from "./DiscoverItem"
 
 
 export function Discoverpage({charities, setCharity, handlePageChange}) {
-//     const testItems = [
-//         {'title': 'title', 'description': 'desc', 'img': 'https://picsum.photos/150/100'},
-//         {'title': 'title', 'description': 'desc', 'img': 'https://picsum.photos/150/100'},
-//         {'title': 'title', 'description': 'desc', 'img': 'https://picsum.photos/150/100'},
-//         {'title': 'title', 'description': 'desc', 'img': 'https://picsum.photos/150/100'},
-//         {'title': 'title', 'description': 'desc', 'img': 'https://picsum.photos/150/100'},
-//         {'title': 'title', 'description': 'desc', 'img': 'https://picsum.photos/150/100'},
-//         {'title': 'title', 'description': 'desc', 'img': 'https://picsum.photos/150/100'},
-//         {'title': 'title', 'description': 'desc', 'img': 'https://picsum.photos/150/100'},
-//         {'title': 'title', 'description': 'desc', 'img': 'https://picsum.photos/150/100'},
-//         {'title': 'title', 'description': 'desc', 'img': 'https://picsum.photos/150/100'},
-//         {'title': 'title', 'description': 'desc', 'img': 'https://picsum.photos/150/100'},
-//         {'title': 'title', 'description': 'desc', 'img': 'https://picsum.photos/150/100'},
-//         {'title': 'title', 'description': 'desc', 'img': 'https://picsum.photos/150/100'},
-//         {'title': 'title', 'description': 'desc', 'img': 'https://picsum.photos/150/100'},
-//         {'title': 'title', 'description': 'desc', 'img': 'https://picsum.photos/150/100'},
-//         {'title': 'title', 'description': 'desc', 'img': 'https://picsum.photos/150/100'},
-//         {'title': 'title', 'description': 'desc', 'img': 'https://picsum.photos/150/100'}
-// ]
+
     const demoImage = 'https://picsum.photos/150/100'
     const discoverItems = []
     const [selectedIndex,setIndex] = useState(0);
@@ -32,15 +14,14 @@ export function Discoverpage({charities, setCharity, handlePageChange}) {
             if(item.img){
                 discoverItems.push(<DiscoverItem title={item.title} description={item.description} image={item.img} key={index} index={index}/>)
             } else {
-                discoverItems.push(<DiscoverItem title={'item.title'} description={'item.description'} image={demoImage} key={index} index={index} handleNavigate={(value)=>{setIndex(value); handleNavigate()}}/>)
+                discoverItems.push(<DiscoverItem title={item.title} description={'item.description'} image={demoImage} key={index} index={index} handleNavigate={(value)=>{setIndex(value); handleNavigate()}}/>)
             }
         }
         return discoverItems
     }
     function handleNavigate() {
-        // todo, this willl need the backend most likely
         setCharity(selectedIndex);
-        // handlePageChange('Project');
+        handlePageChange('Project');
     }
 
 

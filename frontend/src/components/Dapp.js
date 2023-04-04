@@ -25,7 +25,7 @@ import {Navbar} from "./Navbar"
 import './styling/style.css'
  
 // This is the Network id the frontend will use.
-const HARDHAT_NETWORK_ID = '5';
+const HARDHAT_NETWORK_ID = '31337';
 
 // This is an error code that indicates that the user canceled a transaction
 const ERROR_CODE_TX_REJECTED_BY_USER = 4001;
@@ -82,7 +82,7 @@ export class Dapp extends React.Component {
         currentPage = {this.state.currentPage}
         connectWallet = {() => this._connectWallet()}
         handlePageChange={(value) => this.setState({'currentPage':value} )}
-        prepareNewCharity={(name, beneficiary, goal, end_time) => this.setState({'newCharityName':name, 'newBeneficiary': beneficiary, 'newGoal':goal, 'newEndTime':end_time})}
+        prepareNewCharity={(name, beneficiary, goal, end_time) => {this.setState({'newCharityName':name, 'newBeneficiary': beneficiary, 'newGoal':goal, 'newEndTime':end_time}); this._handleNewCharity()}}
         handleNewCharity={()=>{this._handleNewCharity()}}
         unSetCharity = {() => this.setState({'charityData':undefined})}
         handleDisconnectWallet={() => this._disconnectWallet()}
@@ -126,10 +126,10 @@ export class Dapp extends React.Component {
     // TODO update updateCharities to fetch contents of charities rather than just their addresses
     // TODO get more info from backend on selected charity to fill out info
     // TODO implement parallax scrolling, etc. on project page.
-    console.log(this.state.charities);
     if(this.state.charityData !== undefined) {
       this.state.currentPage = 'Project';
     }
+
     switch(this.state.currentPage) {
       case 'Home':
         return (
@@ -152,16 +152,31 @@ export class Dapp extends React.Component {
         </Fragment>
         )
       case 'Project':
-        return (
-          <Fragment>
-            {navbar}
-            <Projectpage 
-            charityName = {this.state.charityData.name}
-            charityEndTime={this.state.charityData.end_time}
-            handleDonate={(value) => {this.setState({'donationAmount': value}); this.handleDonate();}}
-            />
-        </Fragment>
-        )
+        if(this.state.charityData !== undefined) {
+          return (
+            <Fragment>
+              {navbar}
+              <Projectpage 
+              charityName = {this.state.charityData.name}
+              charityEndTime={this.state.charityData.end_time}
+              totalBenificiaries={this.state.totalBenificiaries}
+              totalBalance={this.state.totalBalance}
+              handleDonate={(value) => {this.setState({'donationAmount': value}); this.handleDonate();}}
+              />
+          </Fragment>
+          )
+        } else {
+          return (
+            <Fragment>
+              {navbar}
+              <Projectpage 
+              totalBalance={this.state.totalBalance}
+              handleDonate={(value) => {this.setState({'donationAmount': value}); this.handleDonate();}}
+              />
+          </Fragment>
+          )
+        }
+        
       default:
         return 'failed switch'
     }
@@ -376,25 +391,24 @@ export class Dapp extends React.Component {
     if(!this._charity){
       return;
     }
-    const userBalance = 1
-    // const userBalance = await this._charity.get_user_balance();
-    this.setState({ userBalance });
+    const userBalance = 1//await this._charity.get_user_balance();
+    this.setState({ 'userBalance' :  userBalance});
   }
 
   async _updateTotalBalance() {
     if(!this._charity){
       return;
     }
-    const totalBalance = 1;//await this._charity.get_balance();
-    this.setState({ totalBalance });
+    const totalBalance = await this._charity.get_balance();
+    this.setState({ 'totalBalance': totalBalance });
   }
 
   async _updateTotalBenificiaries(){
     if(!this._charity){
       return;
     }
-    const totalBenificiaries = await this_charity.get_total_benificiaries();
-    this.setState({totalBenificiaries});
+    const totalBenificiaries = await this._charity.get_total_benificiaries();
+    this.setState({'totalBenificiaries': totalBenificiaries});
   }
   
   // Method that wraps _makeCharity to make it callable by child components
