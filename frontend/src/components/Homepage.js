@@ -1,7 +1,7 @@
 import React from "react";
 
 
-export function Homepage({charityName, charityEndTime, totalBenificiaries, totalBalance, handleDonate}) {
+export function Homepage({charityName, charityEndTime, totalBenificiaries, totalBalance, openDonateModal}) {
 
     function convertEndTime() {
         if(charityEndTime !== undefined) {
@@ -57,7 +57,7 @@ export function Homepage({charityName, charityEndTime, totalBenificiaries, total
                             </p>
 
                             <div className="center">
-                                <button className="button">
+                                <button className="button" onClick={openDonateModal}>
                                 Back this project
                                 </button>
                             </div>

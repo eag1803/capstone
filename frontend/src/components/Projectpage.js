@@ -3,7 +3,7 @@ import { Navbar } from "./Navbar"
 
 import './styling/style.css'
 
-export function Projectpage({charityName, charityEndTime, totalBenificiaries, totalBalance, handleDonate}) {
+export function Projectpage({charityName, charityEndTime, totalBenificiaries, totalBalance, openDonateModal}) {
 
     function convertEndTime() {
         if(charityEndTime !== undefined) {
@@ -58,7 +58,7 @@ export function Projectpage({charityName, charityEndTime, totalBenificiaries, to
                     </p>
 
                     <div className="center">
-                        <button className="button">
+                        <button className="button" onClick={openDonateModal}>
                         Back this project
                         </button>
                     </div>

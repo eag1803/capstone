@@ -2,9 +2,7 @@ import React from "react";
 import './styling/navbar.css'
 import { NetworkErrorMessage } from "./NetworkErrorMessage";
 
-// TODO use currentPage to update the options on the navbar dynamically
-// TODO if you are logged in, change the connectWallet button to be a profile button (?)
-export function Navbar({currentPage, connectWallet, handleDisconnectWallet, networkError, dismiss, loggedIn, handlePageChange, prepareNewCharity, handleNewCharity, unSetCharity}) {
+export function Navbar({currentPage, connectWallet, handleDisconnectWallet, networkError, dismiss, loggedIn, handlePageChange, openCharityModal, unSetCharity}) {
 
     function handlePageChangeChild(event) {
       unSetCharity();
@@ -23,11 +21,6 @@ export function Navbar({currentPage, connectWallet, handleDisconnectWallet, netw
       }
     }
 
-    function createCharity() {
-      prepareNewCharity('testCharity3', '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266', 125000, new Date('04/10/2023').getTime())
-      handleNewCharity();
-    }
-
     function loginButton() {
       if(loggedIn) {
         return <button className="navButton" onClick={handleDisconnectWallet}>
@@ -44,7 +37,7 @@ export function Navbar({currentPage, connectWallet, handleDisconnectWallet, netw
       
        {leftPageButton()}
 
-        <button className="navButton" onClick={createCharity}>
+        <button className="navButton" onClick={openCharityModal}>
           <span>Start a Project</span>
         </button>
         

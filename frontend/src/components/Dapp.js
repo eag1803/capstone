@@ -1,4 +1,5 @@
 import React, { Fragment } from "react";
+import Modal from 'react-modal';
 
 // We'll use ethers to interact with the Ethereum network and our contract
 import { ethers } from "ethers";
@@ -30,6 +31,20 @@ const HARDHAT_NETWORK_ID = '31337';
 // This is an error code that indicates that the user canceled a transaction
 const ERROR_CODE_TX_REJECTED_BY_USER = 4001;
 
+
+const modalStyle = {
+  content: {
+    top: '50%',
+    left: '50%',
+    right: 'auto',
+    bottom: 'auto',
+    marginRight: '-50%',
+    transform: 'translate(-50%, -50%)',
+    margin: '20px'
+  },
+}
+
+
 export class Dapp extends React.Component {
   constructor(props) {
     super(props);
@@ -51,17 +66,21 @@ export class Dapp extends React.Component {
       transactionError: undefined,
       networkError: undefined,
       currentPage: 'Home',
-      newCharityName:undefined, 
-      newBeneficiary: undefined, 
-      newGoal:undefined, 
-      newEndTime:undefined,
-      donationAmount : undefined
+      newCharityName:'', 
+      newBeneficiary: '', 
+      newGoal:0, 
+      newEndTime:'',
+      amountToDonate : 0,
+      backModalIsOpen : false,
+      charityModalIsOpen: false
     };
     this.state = this.initialState;
+    this.handleFormChange = this.handleFormChange.bind(this);    
+    this.newCharityForm = this.newCharityForm.bind(this); 
+    this.handleDonate = this.handleDonate.bind(this);
     this.pages = ['Home', 'Discover', 'Project']
   }
 
-  
 
   render() {
     
@@ -78,12 +97,51 @@ export class Dapp extends React.Component {
     //
     // Note that we pass it a callback that is going to be called when the user
     // clicks a button. This callback just calls the _connectWallet method.
+        
+    let charityModal = <Modal isOpen={this.state.charityModalIsOpen} contentLabel={"Modal"} style={modalStyle}>
+    <form onSubmit={this.newCharityForm}>
+      <table>
+        <tbody>
+        <tr><td>Charity Name</td></tr>
+        <tr><td><input id='charityName' type='text' name='newCharityName' required onChange={this.handleFormChange} value={this.state.newCharityName}/></td></tr>
+        <tr><td>Wallet Address</td></tr>
+        <tr><td><input type='text' name='newBeneficiary' required onChange={this.handleFormChange} value={this.state.newBeneficiary}/></td></tr>
+        <tr><td>Goal</td></tr>
+        <tr><td><input type="number" name='newGoal' required onChange={this.handleFormChange} value={this.state.newGoal}/></td></tr>
+        <tr><td>End Date</td></tr>
+        <tr><td><input type="date" name='newEndTime' required onChange={this.handleFormChange} value={this.state.newEndTime}/></td></tr>
+        <tr><td>Other Information (TODO)</td></tr>
+        <tr><td><input/></td></tr>
+        <tr>
+          <td><button onClick={() => {this.setCharityModalIsOpen(false)}}>Close</button></td>
+          <td><input type='submit' onClick={() => {return false}}/></td>
+        </tr>
+        </tbody>
+      </table>
+    </form>
+    </Modal>
+
+    let backModal = <Modal isOpen={this.state.backModalIsOpen} contentLabel={"Modal"} style={modalStyle}>
+    <form onSubmit={this.handleDonate}>
+      <table>
+        <tbody>
+        <tr><td>Amount</td></tr>
+        <tr><td><input type="number" name='amountToDonate' required onChange={this.handleFormChange} value={this.state.amountToDonate}/></td></tr>
+
+        <tr>
+          <td><button onClick={() => {this.setBackModalIsOpen(false)}}>Close</button></td>
+          <td><input type='submit' /></td>
+        </tr>
+        </tbody>
+      </table>
+    </form>
+    </Modal>
+
     const navbar = <Navbar 
         currentPage = {this.state.currentPage}
         connectWallet = {() => this._connectWallet()}
         handlePageChange={(value) => this.setState({'currentPage':value} )}
-        prepareNewCharity={(name, beneficiary, goal, end_time) => {this.setState({'newCharityName':name, 'newBeneficiary': beneficiary, 'newGoal':goal, 'newEndTime':end_time}); this._handleNewCharity()}}
-        handleNewCharity={()=>{this._handleNewCharity()}}
+        openCharityModal={() => this.setState({'charityModalIsOpen':true})}
         unSetCharity = {() => this.setState({'charityData':undefined})}
         handleDisconnectWallet={() => this._disconnectWallet()}
         networkError={this.state.networkError}
@@ -103,8 +161,8 @@ export class Dapp extends React.Component {
         <Fragment>
           {navbar}
           <Homepage 
-          handleDonate={(value) => {this.setState({'donationAmount': value}); this.handleDonate();}}
-          />
+              openDonateModal={() => {this.setState({'backModalIsOpen':true})}}
+              />
       </Fragment>
       )
     }
@@ -117,15 +175,12 @@ export class Dapp extends React.Component {
     }*/
 
     // If everything is loaded, we render the application.
-    
 
 
 
-    // TODO implement a modal for project creation and backing a project
+
     // TODO implement searching
-    // TODO update updateCharities to fetch contents of charities rather than just their addresses
     // TODO get more info from backend on selected charity to fill out info
-    // TODO implement parallax scrolling, etc. on project page.
     if(this.state.charityData !== undefined) {
       this.state.currentPage = 'Project';
     }
@@ -136,8 +191,11 @@ export class Dapp extends React.Component {
           <Fragment>
             {navbar}
             <Homepage 
-              handleDonate={(value) => {this.setState({'donationAmount': value}); this.handleDonate();}}
-            />
+              openDonateModal={() => {this.setState({'backModalIsOpen':true})}}
+              />
+            <button onClick={()=>{this.setCharityModalIsOpen(true);}}> test</button>
+            {charityModal}
+            {backModal}
         </Fragment>
         )
       case 'Discover':
@@ -149,6 +207,8 @@ export class Dapp extends React.Component {
             handlePageChange={(value) => this.setState({'currentPage':value} )}
             setCharity = {(index) => this._selectCharity(index)}
             />
+            {charityModal}
+            {backModal}
         </Fragment>
         )
       case 'Project':
@@ -161,8 +221,10 @@ export class Dapp extends React.Component {
               charityEndTime={this.state.charityData.end_time}
               totalBenificiaries={this.state.totalBenificiaries}
               totalBalance={this.state.totalBalance}
-              handleDonate={(value) => {this.setState({'donationAmount': value}); this.handleDonate();}}
+              openDonateModal={() => {this.setState({'backModalIsOpen':true})}}
               />
+            {charityModal}
+            {backModal}
           </Fragment>
           )
         } else {
@@ -171,8 +233,10 @@ export class Dapp extends React.Component {
               {navbar}
               <Projectpage 
               totalBalance={this.state.totalBalance}
-              handleDonate={(value) => {this.setState({'donationAmount': value}); this.handleDonate();}}
+              openDonateModal={() => {this.setState({'backModalIsOpen':true})}}
               />
+            {charityModal}
+            {backModal}
           </Fragment>
           )
         }
@@ -250,6 +314,13 @@ export class Dapp extends React.Component {
     //     </div>
     //   </div>
     // );
+  }
+
+  handleFormChange(evt) {
+    const value = evt.target.value;
+    const targetName = evt.target.name;
+    const newState = {[targetName] : value}
+    this.setState(newState);
   }
 
   componentWillUnmount() {
@@ -371,20 +442,17 @@ export class Dapp extends React.Component {
 
   async _updateCharities(){
     const charities = await this._charitychain.get_charities();
-    let fullCharities = []
 
-    // for(let charity of charities) {
-    //   let _charity = await this._initializeCharity(charity);
-    //   console.log(charity);
-    //   console.log(_charity);
-    //   const name = await _charity.get_name();
-    //   const beneficiary = await _charity.get_beneficiary();
-    //   const goal = await _charity.get_goal();
-    //   const end_time = await _charity.get_time_left();
-    //   fullCharities.push({'name': name, 'benificiary':beneficiary, 'goal':goal, 'endTime':end_time})
-    // }
     this.setState({ charities })
     
+  }
+
+  setBackModalIsOpen(arg) {
+    this.setState({'backModalIsOpen': arg})
+  }
+
+  setCharityModalIsOpen(arg) {
+    this.setState({'charityModalIsOpen': arg})
   }
 
   async _updateUserBalance() {
@@ -410,12 +478,15 @@ export class Dapp extends React.Component {
     const totalBenificiaries = await this._charity.get_total_benificiaries();
     this.setState({'totalBenificiaries': totalBenificiaries});
   }
-  
-  // Method that wraps _makeCharity to make it callable by child components
-  async _handleNewCharity() {
-    if(this.state.newCharityName != undefined) {
-      await this._makeCharity(this.state.newCharityName, this.state.newBeneficiary, this.state.newGoal, this.state.newEndTime);
-      this.setState({'newCharityName':undefined, 'newBeneficiary': undefined, 'newGoal':undefined, 'newEndTime':undefined});
+
+
+
+  async newCharityForm(event) {
+    event.preventDefault(); // prevent auto refresh
+    if(this.state.newCharityName != '') {
+      let endTime = new Date(this.state.newEndTime).getTime();
+      await this._makeCharity(this.state.newCharityName, this.state.newBeneficiary, this.state.newGoal, endTime);
+      this.setState({'newCharityName':'', 'newBeneficiary': '', 'newGoal':'', 'newEndTime':'', 'charityModalIsOpen':false});
     }
   }
 
@@ -474,9 +545,10 @@ export class Dapp extends React.Component {
     }
   }
   
-  handleDonate() {
-    let donation = this.state.donationAmount;
-    this.setState({'donationAmount' : undefined});
+  handleDonate(event) {
+    event.preventDefault(); // Prevent a refresh
+    let donation = this.state.amountToDonate;
+    this.setState({'amountToDonate' : 0});
     this._donate(donation);
   }
 
