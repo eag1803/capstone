@@ -16,7 +16,7 @@ contract Charity {
     event ContributionReceived(address indexed fromAddress, uint256 amount);
     event WithdrawlSent(uint amount);
 
-    constructor(string memory _name, address _beneficiary, uint256 _goal, uint256 _end_time, address _creator, string memory _metadata) {
+    constructor(string memory _name, address _beneficiary, uint256 _goal, uint256 _end_time, string memory _metadata, address _creator) {
 
         name = _name;
         beneficiary = _beneficiary;
