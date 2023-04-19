@@ -15,8 +15,8 @@ contract CharityChain {
         string title;
     }
 
-    function make_charity(string memory _name, address _beneficiary, uint256 _goal, uint256 _end_time) external payable returns(address){
-        Charity charity = new Charity( _name, _beneficiary, _goal, _end_time, msg.sender);
+    function make_charity(string memory _name, address _beneficiary, uint256 _goal, uint256 _end_time, string memory _metadata) external payable returns(address){
+        Charity charity = new Charity( _name, _beneficiary, _goal, _end_time, msg.sender, _metadata);
         charitys.push(address(charity));
         return address(charity);
     }
