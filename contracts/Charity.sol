@@ -3,6 +3,7 @@ pragma solidity ^0.8.9;
 contract Charity {
 
     string name;
+    string metadata;
     mapping (address => uint256) contributors;
     address creator;
     uint256 goal;
@@ -15,7 +16,7 @@ contract Charity {
     event ContributionReceived(address indexed fromAddress, uint256 amount);
     event WithdrawlSent(uint amount);
 
-    constructor(string memory _name, address _beneficiary, uint256 _goal, uint256 _end_time, address _creator) {
+    constructor(string memory _name, address _beneficiary, uint256 _goal, uint256 _end_time, string memory _metadata, address _creator) {
 
         name = _name;
         beneficiary = _beneficiary;
@@ -24,7 +25,7 @@ contract Charity {
         creator = _creator;
         charityChain = msg.sender;
         total_benificiaries = 0;
-        
+        metadata = _metadata;
     }
 
     function recieve() external payable{
@@ -68,6 +69,10 @@ contract Charity {
 
     function get_name() external view returns(string memory){
         return name;
+    }
+
+    function get_metadata() external view returns (string memory) {
+        return metadata;
     }
 
     function get_goal() external view returns(uint256){

@@ -436,8 +436,9 @@ export class Dapp extends React.Component {
     const beneficiary = await this._charity.get_beneficiary();
     const goal = await this._charity.get_goal();
     const end_time = await this._charity.get_time_left();
+    const metadata = await this._charity.get_metadata();
 
-    this.setState({ charityData: { name, beneficiary, goal, end_time} });
+    this.setState({ charityData: { name, beneficiary, goal, end_time, metadata} });
   }
 
   async _updateCharities(){
@@ -485,17 +486,17 @@ export class Dapp extends React.Component {
     event.preventDefault(); // prevent auto refresh
     if(this.state.newCharityName != '') {
       let endTime = new Date(this.state.newEndTime).getTime();
-      await this._makeCharity(this.state.newCharityName, this.state.newBeneficiary, this.state.newGoal, endTime);
+      await this._makeCharity(this.state.newCharityName, this.state.newBeneficiary, this.state.newGoal, endTime, metadata);
       this.setState({'newCharityName':'', 'newBeneficiary': '', 'newGoal':'', 'newEndTime':'', 'charityModalIsOpen':false});
     }
   }
 
   // Method to make a new Charity
-  async _makeCharity(name, beneficiary, goal, end_time){
+  async _makeCharity(name, beneficiary, goal, end_time, metadata){
     try {
       this._dismissTransactionError();
 
-      const tx = await this._charitychain.make_charity(name, beneficiary, goal, end_time)
+      const tx = await this._charitychain.make_charity(name, beneficiary, goal, end_time, metadata)
       this.setState({ txBeingSent: tx.hash });
 
       const receipt = await tx.wait();
