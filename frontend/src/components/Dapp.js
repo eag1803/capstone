@@ -70,6 +70,7 @@ export class Dapp extends React.Component {
       newBeneficiary: '', 
       newGoal:0, 
       newEndTime:'',
+      newMetadata:'',
       amountToDonate : 0,
       backModalIsOpen : false,
       charityModalIsOpen: false
@@ -99,22 +100,22 @@ export class Dapp extends React.Component {
     // clicks a button. This callback just calls the _connectWallet method.
         
     let charityModal = <Modal isOpen={this.state.charityModalIsOpen} contentLabel={"Modal"} style={modalStyle}>
-    <form onSubmit={this.newCharityForm}>
+    <form onSubmit={(e) => this.newCharityForm(e)}>
       <table>
         <tbody>
         <tr><td>Charity Name</td></tr>
         <tr><td><input id='charityName' type='text' name='newCharityName' required onChange={this.handleFormChange} value={this.state.newCharityName}/></td></tr>
-        <tr><td>Wallet Address</td></tr>
+        <tr><td>Beneficiaries Wallet Address</td></tr>
         <tr><td><input type='text' name='newBeneficiary' required onChange={this.handleFormChange} value={this.state.newBeneficiary}/></td></tr>
         <tr><td>Goal</td></tr>
         <tr><td><input type="number" name='newGoal' required onChange={this.handleFormChange} value={this.state.newGoal}/></td></tr>
         <tr><td>End Date</td></tr>
         <tr><td><input type="date" name='newEndTime' required onChange={this.handleFormChange} value={this.state.newEndTime}/></td></tr>
         <tr><td>Other Information (TODO)</td></tr>
-        <tr><td><input/></td></tr>
+        <tr><td><input type='text' name='newMetadata' required onChange={this.handleFormChange} value={this.state.newMetadata}/></td></tr>
         <tr>
           <td><button onClick={() => {this.setCharityModalIsOpen(false)}}>Close</button></td>
-          <td><input type='submit' onClick={() => {return false}}/></td>
+          <td><input type='submit' onClick={(e) => this.newCharityForm(e)}/></td>
         </tr>
         </tbody>
       </table>
@@ -182,7 +183,8 @@ export class Dapp extends React.Component {
     // TODO implement searching
     // TODO get more info from backend on selected charity to fill out info
     if(this.state.charityData !== undefined) {
-      this.state.currentPage = 'Project';
+      this.setState({currentPage:'Project'})
+      //this.state.currentPage = 'Project';
     }
 
     switch(this.state.currentPage) {
@@ -484,10 +486,10 @@ export class Dapp extends React.Component {
 
   async newCharityForm(event) {
     event.preventDefault(); // prevent auto refresh
-    if(this.state.newCharityName != '') {
+    if(this.state.newCharityName !== '') {
       let endTime = new Date(this.state.newEndTime).getTime();
-      await this._makeCharity(this.state.newCharityName, this.state.newBeneficiary, this.state.newGoal, endTime, metadata);
-      this.setState({'newCharityName':'', 'newBeneficiary': '', 'newGoal':'', 'newEndTime':'', 'charityModalIsOpen':false});
+      await this._makeCharity(this.state.newCharityName, this.state.newBeneficiary, this.state.newGoal, endTime, this.state.newMetadata);
+      this.setState({'newCharityName':'', 'newBeneficiary': '', 'newGoal':'', 'newEndTime':'','newMetadata':'', 'charityModalIsOpen':false});
     }
   }
 
