@@ -183,8 +183,8 @@ export class Dapp extends React.Component {
     // TODO implement searching
     // TODO get more info from backend on selected charity to fill out info
     if(this.state.charityData !== undefined) {
-      this.setState({currentPage:'Project'})
-      //this.state.currentPage = 'Project';
+      //this.setState({currentPage:'Project'})
+      this.state.currentPage = 'Project';
     }
 
     switch(this.state.currentPage) {
