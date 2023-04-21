@@ -498,7 +498,7 @@ export class Dapp extends React.Component {
     try {
       this._dismissTransactionError();
 
-      const tx = await this._charitychain.make_charity(name, beneficiary, goal, end_time, metadata)
+      const tx = await this._charitychain.make_charity(name, beneficiary, goal, metadata,end_time)
       this.setState({ txBeingSent: tx.hash });
 
       const receipt = await tx.wait();
