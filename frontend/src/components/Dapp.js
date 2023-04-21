@@ -549,7 +549,9 @@ export class Dapp extends React.Component {
     event.preventDefault(); // Prevent a refresh
     let donation = this.state.amountToDonate;
     this.setState({'amountToDonate' : 0});
-    this._donate(donation);
+    console.log(`donating ${donation}`)
+
+    this._donate(donation.toString());
   }
 
 

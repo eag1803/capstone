@@ -1,5 +1,6 @@
 import React from "react";
 import { Navbar } from "./Navbar"
+import { utils } from "ethers";
 
 import './styling/style.css'
 
@@ -27,7 +28,7 @@ export function Projectpage({charityName, charityEndTime, totalBenificiaries, to
 
     function getTotalRaised() {
         if(totalBalance !== undefined) {
-            return totalBalance.toNumber()
+            return utils.formatEther(totalBalance)
         }
     }
     return <div className='projectPage'>
@@ -42,9 +43,8 @@ export function Projectpage({charityName, charityEndTime, totalBenificiaries, to
                         </p>
                     </span>
                 </div>
-        <div className='content'>
-            <div className="placeholder">
-            placeholder
+            <div className='content'>
+                <img src='https://picsum.photos/1400/1400' className="fullImg"/>
 
                 <div className='right' id='backerInfo'>
                     <p>
@@ -54,7 +54,7 @@ export function Projectpage({charityName, charityEndTime, totalBenificiaries, to
                     {getBackers()} Backers
                     <br/><br/>
 
-                    {convertEndTime()} 
+                    {convertEndTime()} Days Remaining
                     </p>
 
                     <div className="center">
@@ -62,7 +62,6 @@ export function Projectpage({charityName, charityEndTime, totalBenificiaries, to
                         Back this project
                         </button>
                     </div>
-                </div>
             </div>
         </div>
     </div>

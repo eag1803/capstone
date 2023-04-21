@@ -68,6 +68,13 @@
     margin-bottom: 50px;
   }
 
+  .fullImg {
+    width: 70%;
+    height: 60dvh;
+    margin-left: 50px;
+    margin-bottom: 50px;
+  }
+
   #backerInfo {
     border-bottom:solid black;
     border-top:solid black;
@@ -94,7 +101,6 @@
 
   .content {
     display: flex;
-    
   }
 
   .discoverList {

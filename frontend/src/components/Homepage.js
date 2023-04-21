@@ -42,25 +42,23 @@ export function Homepage({charityName, charityEndTime, totalBenificiaries, total
                 </div>
 
                 <div className='content'>
-                    <div className="placeholder">
-                    placeholder
+                    <img src='https://picsum.photos/1400/1400' className="fullImg"/>
 
-                        <div className='right' id='backerInfo'>
-                            <p>
-                            ${getTotalRaised()} Raised
-                            <br/><br/>
+                    <div className='right' id='backerInfo'>
+                        <p>
+                        ${getTotalRaised()} Raised
+                        <br/><br/>
 
-                            {getBackers()} Backers
-                            <br/><br/>
+                        {getBackers()} Backers
+                        <br/><br/>
 
-                            {convertEndTime()} Days Remaining
-                            </p>
+                        {convertEndTime()} Days Remaining
+                        </p>
 
-                            <div className="center">
-                                <button className="button" onClick={openDonateModal}>
-                                Back this project
-                                </button>
-                            </div>
+                        <div className="center">
+                            <button className="button" onClick={openDonateModal}>
+                            Back this project
+                            </button>
                         </div>
                     </div>
                 </div>
