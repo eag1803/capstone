@@ -10,7 +10,6 @@ export function Projectpage({charityName, charityEndTime, totalBenificiaries, to
         if(charityEndTime !== undefined) {
             let endTimeUnix = charityEndTime.toNumber()
             let endDate = new Date(endTimeUnix);
-            console.log(endDate);
             // To calculate the time difference of two dates
             let diffTime = endDate.getTime() - new Date().getTime()
     
