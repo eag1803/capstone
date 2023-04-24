@@ -394,7 +394,8 @@ export class Dapp extends React.Component {
   }
 
   async _homepage(){
-    const id = await this._charitychain.get_random_charity_id()
+    const len = this.state.charities.length
+    const id = Math.floor(Math.random() * len);
     this._selectCharity(id)
   }
   

@@ -57,10 +57,5 @@ contract CharityChain {
 
     }
 
-    function get_random_charity_id() external view returns(uint){
-        uint len = charitys.length;
-        return uint(keccak256(abi.encodePacked(block.difficulty, block.timestamp, msg.sender))) % len;
-    }
-
     
 }
