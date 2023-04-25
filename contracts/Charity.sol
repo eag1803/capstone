@@ -39,7 +39,7 @@ contract Charity {
 
     function withdrawl() external {
         require(msg.sender == beneficiary, "Only the benificiary can withdrawl from the charity");
-        require(block.timestamp >= end_time || goal < address(this).balance, "The time or money goals for the charity have not been satisfied");
+        require(block.timestamp >= end_time || goal <= address(this).balance, "The time or money goals for the charity have not been satisfied");
         require(!lock, "Cannot withdraw while another withdrawal is processing");
         lock = true;
         uint bal = address(this).balance;

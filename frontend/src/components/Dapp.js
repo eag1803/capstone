@@ -150,13 +150,13 @@ export class Dapp extends React.Component {
         loggedIn={this.state.selectedAddress}
       />
     if (!this.state.selectedAddress) {
-      // return (
-      //   <ConnectWallet 
-      //     connectWallet={() => this._connectWallet()} 
-      //     networkError={this.state.networkError}
-      //     dismiss={() => this._dismissNetworkError()}
-      //   />
-      // );
+       return (
+         <ConnectWallet 
+           connectWallet={() => this._connectWallet()} 
+           networkError={this.state.networkError}
+           dismiss={() => this._dismissNetworkError()}
+         />
+       );
 
       return (
         <Fragment>
@@ -223,6 +223,9 @@ export class Dapp extends React.Component {
               charityEndTime={this.state.charityData.end_time}
               totalBenificiaries={this.state.totalBenificiaries}
               totalBalance={this.state.totalBalance}
+              charityGoal = {this.state.charityData.goal}
+              showWithdrawl = {this.state.charityData.beneficiary.toString().toLowerCase() === this.state.selectedAddress.toString()} 
+              withdraw = {() => this._withdraw()}
               openDonateModal={() => {this.setState({'backModalIsOpen':true})}}
               />
             {charityModal}
@@ -494,7 +497,7 @@ export class Dapp extends React.Component {
     event.preventDefault(); // prevent auto refresh
     if(this.state.newCharityName !== '') {
       let endTime = new Date(this.state.newEndTime).getTime();
-      await this._makeCharity(this.state.newCharityName, this.state.newBeneficiary, this.state.newGoal, endTime, this.state.newMetadata);
+      await this._makeCharity(this.state.newCharityName, this.state.newBeneficiary, ethers.utils.parseEther(this.state.newGoal), endTime, this.state.newMetadata);
       this.setState({'newCharityName':'', 'newBeneficiary': '', 'newGoal':'', 'newEndTime':'','newMetadata':'', 'charityModalIsOpen':false});
     }
   }

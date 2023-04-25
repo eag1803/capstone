@@ -3,8 +3,9 @@ import { Navbar } from "./Navbar"
 import { utils } from "ethers";
 
 import './styling/style.css'
+import { Withdrawl } from "./Withdrawl";
 
-export function Projectpage({charityName, charityEndTime, totalBenificiaries, totalBalance, openDonateModal}) {
+export function Projectpage({charityName, charityEndTime, totalBenificiaries, totalBalance, charityGoal, showWithdrawl, withdraw, openDonateModal}) {
 
     function convertEndTime() {
         if(charityEndTime !== undefined) {
@@ -30,6 +31,20 @@ export function Projectpage({charityName, charityEndTime, totalBenificiaries, to
             return utils.formatEther(totalBalance)
         }
     }
+
+    function getGoal(){
+        if(charityGoal !== undefined){
+            return utils.formatEther(charityGoal)
+        }
+    }
+
+    function getWithdrawl(){
+        if(showWithdrawl !== undefined){
+            return showWithdrawl
+        }
+        return false
+    }
+
     return <div className='projectPage'>
     <div className="home">
     <div className='center'>
@@ -47,7 +62,7 @@ export function Projectpage({charityName, charityEndTime, totalBenificiaries, to
 
                 <div className='right' id='backerInfo'>
                     <p>
-                    ${getTotalRaised()} Raised
+                    {getTotalRaised()} ETH / {getGoal()} ETH Raised
                     <br/><br/>
 
                     {getBackers()} Backers
@@ -60,6 +75,11 @@ export function Projectpage({charityName, charityEndTime, totalBenificiaries, to
                         <button className="button" onClick={openDonateModal}>
                         Back this project
                         </button>
+                        {getWithdrawl() && (
+                            <button className="button" onClick={withdraw}>
+                                Withdraw
+                            </button>
+                        )}
                     </div>
             </div>
         </div>
