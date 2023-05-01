@@ -157,15 +157,6 @@ export class Dapp extends React.Component {
            dismiss={() => this._dismissNetworkError()}
          />
        );
-
-      return (
-        <Fragment>
-          {navbar}
-          <Homepage 
-              openDonateModal={() => {this.setState({'backModalIsOpen':true})}}
-              />
-      </Fragment>
-      )
     }
 
     /*
@@ -177,7 +168,7 @@ export class Dapp extends React.Component {
 
     // If everything is loaded, we render the application.
 
-
+    this._homepage();
 
 
     // TODO implement searching
