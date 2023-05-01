@@ -10,7 +10,7 @@ export function Navbar({currentPage, connectWallet, handleDisconnectWallet, netw
     }
 
     function leftPageButton() {
-      if(currentPage == 'Home') {
+      if(currentPage === 'Home') {
         return  <button name='Discover' className="navButton" onClick={handlePageChangeChild}>
         <span>Discover</span>
       </button>
@@ -44,9 +44,7 @@ export function Navbar({currentPage, connectWallet, handleDisconnectWallet, netw
         <span className='center'><img className="icon" src='https://img.icons8.com/windows/512/jsfiddle--v2.png'/> </span>
         
         <span className='right'>
-          <button className="navButton">
-          <span>Search</span>
-          </button>
+         
     
           {loginButton()}
           <div className="col-12 text-center">

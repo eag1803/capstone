@@ -168,7 +168,7 @@ export class Dapp extends React.Component {
 
     // If everything is loaded, we render the application.
 
-    this._homepage();
+   // this._homepage();
 
 
     // TODO implement searching
