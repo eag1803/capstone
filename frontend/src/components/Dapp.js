@@ -162,9 +162,9 @@ export class Dapp extends React.Component {
     
     // If the token data or the user's balance hasn't loaded yet, we show
     // a loading component.
-    if (!this.state.charities) {
-      return <Loading />;
-    }
+    // if (!this.state.userBalance) {
+    //   return <Loading />;
+    // }
 
     // If everything is loaded, we render the application.
     if(this.state.currentPage === 'Home' && this.state.charityData === undefined) {
@@ -397,9 +397,11 @@ export class Dapp extends React.Component {
   }
 
   async _homepage(){
-    const len = this.state.charities.length
-    const id = Math.floor(Math.random() * len);
-    this._selectCharity(id)
+    if(this.state.charities !== undefined) {
+      const len = this.state.charities.length
+      const id = Math.floor(Math.random() * len);
+      this._selectCharity(id)
+    }
   }
   
   _selectCharity(index){
