@@ -39,6 +39,9 @@ export function Homepage({charityName, charityEndTime, totalBenificiaries, total
             <div className="home">
                 <div className='center'>
                             <span >
+                                <h2>
+                                    Featured Project
+                                </h2>
                                 <h3>
                                     {(charityName !== undefined ? charityName : '') }
                                 </h3>

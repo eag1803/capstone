@@ -10,15 +10,16 @@ export function Navbar({currentPage, connectWallet, handleDisconnectWallet, netw
     }
 
     function leftPageButton() {
-      if(currentPage === 'Home') {
-        return  <button name='Discover' className="navButton" onClick={handlePageChangeChild}>
-        <span>Discover</span>
-      </button>
-      } else {
-        return  <button name='Home' className="navButton" onClick={handlePageChangeChild}>
-        <span>Home</span>
-      </button>
-      }
+        return (
+          <>
+            <button name='Home' className="navButton" onClick={handlePageChangeChild}>
+              <span>Home</span>
+            </button>
+            <button name='Discover' className="navButton" onClick={handlePageChangeChild}>
+              <span>Discover</span>
+            </button>
+          </>
+        )
     }
 
     function loginButton() {
