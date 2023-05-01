@@ -170,20 +170,38 @@ export class Dapp extends React.Component {
     if(this.state.currentPage === 'Home' && this.state.charityData === undefined) {
       this._homepage();
     }
-
     switch(this.state.currentPage) {
       case 'Home':
-        return (
-          <Fragment>
-            {navbar}
-            <Homepage 
-              openDonateModal={() => {this.setState({'backModalIsOpen':true})}}
+        if(this.state.charityData !== undefined) {
+          return (
+            <Fragment>
+              {navbar}
+              <Homepage 
+                  charityName = {this.state.charityData.name}
+                  charityEndTime={this.state.charityData.end_time}
+                  totalBenificiaries={this.state.totalBenificiaries}
+                  totalBalance={this.state.totalBalance}
+                  charityGoal = {this.state.charityData.goal}
+                  showWithdrawl = {this.state.charityData.beneficiary.toString().toLowerCase() === this.state.selectedAddress.toString()} 
+                  withdraw = {() => this._withdraw()}
+                  openDonateModal={() => {this.setState({'backModalIsOpen':true})}}
+                />
+              {charityModal}
+              {backModal}
+          </Fragment>
+          )
+        } else {
+          return (
+            <Fragment>
+              {navbar}
+              <Homepage
               />
-            <button onClick={()=>{this.setCharityModalIsOpen(true);}}> test</button>
-            {charityModal}
-            {backModal}
-        </Fragment>
-        )
+              {charityModal}
+              {backModal}
+            </Fragment>
+          )
+        }
+        
       case 'Discover':
         return (
           <Fragment>

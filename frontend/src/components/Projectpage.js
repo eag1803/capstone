@@ -47,7 +47,7 @@ export function Projectpage({charityName, charityEndTime, totalBenificiaries, to
 
     return <div className='projectPage'>
     <div className="home">
-    <div className='center'>
+        <div className='center'>
                     <span >
                         <h3>
                             {charityName}
