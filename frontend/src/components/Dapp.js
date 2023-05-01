@@ -159,23 +159,16 @@ export class Dapp extends React.Component {
        );
     }
 
-    /*
+    
     // If the token data or the user's balance hasn't loaded yet, we show
     // a loading component.
-    if (!this.state.tokenData || !this.state.userBalance || !this.state.totalBalance) {
+    if (!this.state.charities) {
       return <Loading />;
-    }*/
+    }
 
     // If everything is loaded, we render the application.
-
-    this._homepage();
-
-
-    // TODO implement searching
-    // TODO get more info from backend on selected charity to fill out info
-    if(this.state.charityData !== undefined) {
-      //this.setState({currentPage:'Project'})
-      this.state.currentPage = 'Project';
+    if(this.state.currentPage === 'Home' && this.state.charityData === undefined) {
+      this._homepage();
     }
 
     switch(this.state.currentPage) {
@@ -326,7 +319,6 @@ export class Dapp extends React.Component {
 
   async _connectWallet() {
     // This method is run when the user clicks the Connect. It connects the dapp to the user's wallet, and initializes it.
-
     const [selectedAddress] = await window.ethereum.request({ method: 'eth_requestAccounts' });
 
     // First we check the network
@@ -362,7 +354,6 @@ export class Dapp extends React.Component {
 
   _initialize(userAddress) {
     // This method initializes the dapp
-
     // We first store the user's address in the component's state
     this.setState({
       selectedAddress: userAddress,
@@ -445,7 +436,6 @@ export class Dapp extends React.Component {
 
   async _updateCharities(){
     const charities = await this._charitychain.get_charities();
-
     this.setState({ charities })
     
   }
