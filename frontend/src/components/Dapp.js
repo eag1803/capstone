@@ -111,8 +111,8 @@ export class Dapp extends React.Component {
         <tr><td><input type="number" name='newGoal' required onChange={this.handleFormChange} value={this.state.newGoal}/></td></tr>
         <tr><td>End Date</td></tr>
         <tr><td><input type="date" name='newEndTime' required onChange={this.handleFormChange} value={this.state.newEndTime}/></td></tr>
-        <tr><td>Other Information (TODO)</td></tr>
-        <tr><td><input type='text' name='newMetadata' required onChange={this.handleFormChange} value={this.state.newMetadata}/></td></tr>
+        <tr><td>Project Description</td></tr>
+        <tr><td><textarea name='newMetadata' maxlength="64" required onChange={this.handleFormChange} value={this.state.newMetadata}/></td></tr>
         <tr>
           <td><button onClick={() => {this.setCharityModalIsOpen(false)}}>Close</button></td>
           <td><input type='submit' onClick={(e) => this.newCharityForm(e)}/></td>
@@ -157,49 +157,52 @@ export class Dapp extends React.Component {
            dismiss={() => this._dismissNetworkError()}
          />
        );
-
-      return (
-        <Fragment>
-          {navbar}
-          <Homepage 
-              openDonateModal={() => {this.setState({'backModalIsOpen':true})}}
-              />
-      </Fragment>
-      )
     }
 
-    /*
+    
     // If the token data or the user's balance hasn't loaded yet, we show
     // a loading component.
-    if (!this.state.tokenData || !this.state.userBalance || !this.state.totalBalance) {
-      return <Loading />;
-    }*/
+    // if (!this.state.userBalance) {
+    //   return <Loading />;
+    // }
 
     // If everything is loaded, we render the application.
-
-
-
-
-    // TODO implement searching
-    // TODO get more info from backend on selected charity to fill out info
-    if(this.state.charityData !== undefined) {
-      //this.setState({currentPage:'Project'})
-      this.state.currentPage = 'Project';
+    if(this.state.currentPage === 'Home' && this.state.charityData === undefined) {
+      this._homepage();
     }
-
     switch(this.state.currentPage) {
       case 'Home':
-        return (
-          <Fragment>
-            {navbar}
-            <Homepage 
-              openDonateModal={() => {this.setState({'backModalIsOpen':true})}}
+        if(this.state.charityData !== undefined) {
+          return (
+            <Fragment>
+              {navbar}
+              <Homepage 
+                  charityName = {this.state.charityData.name}
+                  charityEndTime={this.state.charityData.end_time}
+                  totalBenificiaries={this.state.totalBenificiaries}
+                  totalBalance={this.state.totalBalance}
+                  charityGoal = {this.state.charityData.goal}
+                  description = {this.state.charityData.metadata}
+                  showWithdrawl = {this.state.charityData.beneficiary.toString().toLowerCase() === this.state.selectedAddress.toString()} 
+                  withdraw = {() => this._withdraw()}
+                  openDonateModal={() => {this.setState({'backModalIsOpen':true})}}
+                />
+              {charityModal}
+              {backModal}
+          </Fragment>
+          )
+        } else {
+          return (
+            <Fragment>
+              {navbar}
+              <Homepage
               />
-            <button onClick={()=>{this.setCharityModalIsOpen(true);}}> test</button>
-            {charityModal}
-            {backModal}
-        </Fragment>
-        )
+              {charityModal}
+              {backModal}
+            </Fragment>
+          )
+        }
+        
       case 'Discover':
         return (
           <Fragment>
@@ -224,6 +227,7 @@ export class Dapp extends React.Component {
               totalBenificiaries={this.state.totalBenificiaries}
               totalBalance={this.state.totalBalance}
               charityGoal = {this.state.charityData.goal}
+              description = {this.state.charityData.metadata}
               showWithdrawl = {this.state.charityData.beneficiary.toString().toLowerCase() === this.state.selectedAddress.toString()} 
               withdraw = {() => this._withdraw()}
               openDonateModal={() => {this.setState({'backModalIsOpen':true})}}
@@ -335,7 +339,6 @@ export class Dapp extends React.Component {
 
   async _connectWallet() {
     // This method is run when the user clicks the Connect. It connects the dapp to the user's wallet, and initializes it.
-
     const [selectedAddress] = await window.ethereum.request({ method: 'eth_requestAccounts' });
 
     // First we check the network
@@ -371,7 +374,6 @@ export class Dapp extends React.Component {
 
   _initialize(userAddress) {
     // This method initializes the dapp
-
     // We first store the user's address in the component's state
     this.setState({
       selectedAddress: userAddress,
@@ -397,9 +399,11 @@ export class Dapp extends React.Component {
   }
 
   async _homepage(){
-    const len = this.state.charities.length
-    const id = Math.floor(Math.random() * len);
-    this._selectCharity(id)
+    if(this.state.charities !== undefined) {
+      const len = this.state.charities.length
+      const id = Math.floor(Math.random() * len);
+      this._selectCharity(id)
+    }
   }
   
   _selectCharity(index){
@@ -454,7 +458,6 @@ export class Dapp extends React.Component {
 
   async _updateCharities(){
     const charities = await this._charitychain.get_charities();
-
     this.setState({ charities })
     
   }

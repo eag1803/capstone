@@ -5,7 +5,7 @@ import { utils } from "ethers";
 import './styling/style.css'
 import { Withdrawl } from "./Withdrawl";
 
-export function Projectpage({charityName, charityEndTime, totalBenificiaries, totalBalance, charityGoal, showWithdrawl, withdraw, openDonateModal}) {
+export function Projectpage({charityName, charityEndTime, totalBenificiaries, totalBalance, charityGoal, description, showWithdrawl, withdraw, openDonateModal}) {
 
     function convertEndTime() {
         if(charityEndTime !== undefined) {
@@ -45,15 +45,16 @@ export function Projectpage({charityName, charityEndTime, totalBenificiaries, to
         return false
     }
 
+
     return <div className='projectPage'>
     <div className="home">
-    <div className='center'>
+        <div className='center'>
                     <span >
                         <h3>
                             {charityName}
                         </h3>
                         <p className='projectDescription'>
-                            projectDescription
+                            {description}
                         </p>
                     </span>
                 </div>
