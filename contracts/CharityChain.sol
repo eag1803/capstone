@@ -13,6 +13,7 @@ contract CharityChain {
     struct CharityInfo {
         address charity;
         string title;
+        string description;
     }
 
     function make_charity(string memory _name, address _beneficiary, uint256 _goal, string memory _metadata, uint256 _end_time) external payable returns(address){
@@ -26,7 +27,8 @@ contract CharityChain {
         CharityInfo[] memory info = new CharityInfo[](len);
         for(uint i = 0; i < len; i++){
             string memory _title = Charity(charitys[i]).get_name();
-            info[i] = CharityInfo({charity:charitys[i], title:_title});
+            string memory _description = Charity(charitys[i]).get_metadata();
+            info[i] = CharityInfo({charity:charitys[i], title:_title, description:_description});
         }
         return info;
     }
