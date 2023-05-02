@@ -2,7 +2,7 @@ import React from "react";
 import { utils } from "ethers";
 
 
-export function Homepage({charityName, charityEndTime, totalBenificiaries, totalBalance, charityGoal, showWithdrawl, withdraw, openDonateModal}) {
+export function Homepage({charityName, charityEndTime, totalBenificiaries, totalBalance, charityGoal, description, showWithdrawl, withdraw, openDonateModal}) {
 
     function convertEndTime() {
         if(charityEndTime !== undefined) {
@@ -46,7 +46,7 @@ export function Homepage({charityName, charityEndTime, totalBenificiaries, total
                                     {(charityName !== undefined ? charityName : '') }
                                 </h3>
                                 <p className='projectDescription'>
-                                    projectDescription
+                                    {description}
                                 </p>
                             </span>
                         </div>

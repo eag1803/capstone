@@ -111,8 +111,8 @@ export class Dapp extends React.Component {
         <tr><td><input type="number" name='newGoal' required onChange={this.handleFormChange} value={this.state.newGoal}/></td></tr>
         <tr><td>End Date</td></tr>
         <tr><td><input type="date" name='newEndTime' required onChange={this.handleFormChange} value={this.state.newEndTime}/></td></tr>
-        <tr><td>Other Information (TODO)</td></tr>
-        <tr><td><input type='text' name='newMetadata' required onChange={this.handleFormChange} value={this.state.newMetadata}/></td></tr>
+        <tr><td>Project Description</td></tr>
+        <tr><td><textarea name='newMetadata' maxlength="64" required onChange={this.handleFormChange} value={this.state.newMetadata}/></td></tr>
         <tr>
           <td><button onClick={() => {this.setCharityModalIsOpen(false)}}>Close</button></td>
           <td><input type='submit' onClick={(e) => this.newCharityForm(e)}/></td>
@@ -182,6 +182,7 @@ export class Dapp extends React.Component {
                   totalBenificiaries={this.state.totalBenificiaries}
                   totalBalance={this.state.totalBalance}
                   charityGoal = {this.state.charityData.goal}
+                  description = {this.state.charityData.metadata}
                   showWithdrawl = {this.state.charityData.beneficiary.toString().toLowerCase() === this.state.selectedAddress.toString()} 
                   withdraw = {() => this._withdraw()}
                   openDonateModal={() => {this.setState({'backModalIsOpen':true})}}
@@ -226,6 +227,7 @@ export class Dapp extends React.Component {
               totalBenificiaries={this.state.totalBenificiaries}
               totalBalance={this.state.totalBalance}
               charityGoal = {this.state.charityData.goal}
+              description = {this.state.charityData.metadata}
               showWithdrawl = {this.state.charityData.beneficiary.toString().toLowerCase() === this.state.selectedAddress.toString()} 
               withdraw = {() => this._withdraw()}
               openDonateModal={() => {this.setState({'backModalIsOpen':true})}}
